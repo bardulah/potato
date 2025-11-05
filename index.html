@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="An immersive journey through simulation reality">
+    <title>Simulation Reality - Seeking Fulfillment</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="container">
+        <canvas id="canvas"></canvas>
+
+        <div id="ui-overlay">
+            <div id="intro" class="fade-in">
+                <h1>SIMULATION REALITY</h1>
+                <p class="subtitle">In a world of infinite possibilities, what do you truly seek?</p>
+                <button id="enter-btn">ENTER THE SIMULATION</button>
+            </div>
+
+            <div id="hud" class="hidden">
+                <div class="hud-item">
+                    <span class="label">CONSCIOUSNESS:</span>
+                    <div class="progress-bar">
+                        <div id="consciousness-bar" class="progress-fill"></div>
+                    </div>
+                </div>
+                <div class="hud-item">
+                    <span class="label">FULFILLMENT:</span>
+                    <div class="progress-bar">
+                        <div id="fulfillment-bar" class="progress-fill"></div>
+                    </div>
+                </div>
+                <div class="hud-message" id="message">
+                    Explore to discover meaning...
+                </div>
+            </div>
+
+            <div id="instructions" class="hidden">
+                <p>Click and drag to rotate • Scroll to zoom</p>
+                <p class="mobile-only">Touch and drag to explore</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>
