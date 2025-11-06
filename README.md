@@ -1,173 +1,397 @@
 # Simulation Reality - 3D WebGL Experience
 
-An immersive browser-based 3D experience exploring the concept of simulation reality and humanity's search for fulfillment. Built with modern web technologies including WebGL and Three.js, featuring custom shaders and optimized performance for both desktop and mobile devices.
+> An immersive browser-based 3D experience exploring simulation reality and humanity's search for fulfillment, built with modern web technologies, TypeScript, and custom GLSL shaders.
 
-## Features
+![Version](https://img.shields.io/badge/version-2.0.0-blue)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)
+![Three.js](https://img.shields.io/badge/Three.js-0.159-green)
+![License](https://img.shields.io/badge/license-MIT-green)
+
+## 🎭 Overview
+
+This is a complete refactoring of the simulation reality experience with professional architecture, TypeScript, modular systems, and enhanced narrative elements. The project explores philosophical themes of consciousness, reality, and the search for meaning in a potentially simulated existence.
+
+## ✨ Key Features
 
 ### 🎨 Visual Design
-- **Custom Shader Programming**: Hand-crafted GLSL shaders for unique visual effects
-- **Dynamic Grid System**: Animated reality grid with wave distortions and glitch effects
-- **Particle Systems**: Atmospheric particles creating depth and immersion
-- **Procedural Animations**: Physics-based floating orbs representing seekers of fulfillment
-- **Fresnel Effects**: Advanced lighting techniques for ethereal glow effects
+- **Custom GLSL Shaders** - Hand-crafted vertex and fragment shaders in separate `.glsl` files
+- **Dynamic Grid System** - Reality grid with wave distortions, glitch effects, and scanlines
+- **Interactive Glitches** - Click/touch to create reality tears with custom shader effects
+- **Floating Orbs** - Procedurally animated entities with Fresnel rim lighting
+- **Particle System** - Object-pooled atmospheric particles for performance
+- **Zone-Based Visuals** - UI and effects change based on narrative progression
+- **Post-Processing** - Additive blending, dynamic colors, and glow effects
 
-### 🚀 Performance Optimizations
-- **Mobile-First Design**: Adaptive quality settings based on device capabilities
-- **Smart Rendering**: Pixel ratio limiting and conditional antialiasing
-- **Efficient Geometry**: Reduced polygon counts on mobile devices
-- **Optimized Shaders**: Lightweight calculations for smooth 60fps performance
-- **Responsive Canvas**: Automatic adaptation to screen size and orientation
+### 🚀 Performance & Architecture
+- **TypeScript** - Full type safety and IDE support
+- **Modular Systems** - Decoupled, testable architecture
+- **Object Pooling** - Efficient particle management
+- **LOD System** - Adaptive geometry based on device capabilities
+- **Mobile Optimization** - Responsive quality settings
+- **PWA Support** - Installable, works offline
+- **Smart Rendering** - Pixel ratio limiting, conditional antialiasing
 
-### 🎮 Interactive Elements
-- **Mouse Control**: Drag to rotate the scene
-- **Touch Support**: Full touch gesture support for mobile devices
-- **Zoom Controls**: Scroll/pinch to adjust camera distance
-- **Progressive Experience**: Consciousness and fulfillment meters that evolve over time
-- **Dynamic Messaging**: Contextual messages based on exploration progress
+### 🎮 Interactive & Narrative
+- **Branching Narrative** - Multiple zones (Void, Awakening, Transcendence)
+- **Meaningful Choices** - Player decisions affect consciousness and fulfillment
+- **Four Endings** - Dissolution, Acceptance, Transcendence, Rebellion
+- **Interactive Glitches** - Discover reality tears by clicking/touching
+- **Progressive Experience** - Evolving messages and visual feedback
+- **Audio System** - Generative Web Audio API soundscapes
 
-### 🎭 Thematic Elements
-- **Simulation Reality**: Glitch effects and grid patterns suggesting a digital reality
-- **Seeking Fulfillment**: Orbs that evolve as the experience progresses
-- **Consciousness Growth**: Visual feedback through color transitions and intensity
-- **Existential Narrative**: UI messages that evolve with the journey
+### 🛠️ Developer Experience
+- **Debug GUI** - Live parameter tweaking with lil-gui
+- **Hot Module Replacement** - Fast shader and code iteration
+- **Event System** - Decoupled communication via EventBus
+- **Configuration System** - Centralized settings management
+- **Type Safety** - Full TypeScript support with strict mode
+- **Test Setup** - Vitest configuration included
 
-## Technology Stack
+## 📁 Project Structure
 
-- **Three.js** (v0.159.0) - 3D graphics library
-- **WebGL** - Hardware-accelerated 3D rendering
-- **GLSL** - Custom shader programming
-- **Vite** - Modern build tool and dev server
-- **Vanilla JavaScript** - No heavy frameworks, pure performance
+```
+simulation-reality/
+├── src/
+│   ├── shaders/           # GLSL shader files
+│   │   ├── grid/          # Reality grid shaders
+│   │   │   ├── vertex.glsl
+│   │   │   └── fragment.glsl
+│   │   ├── orb/           # Floating orb shaders
+│   │   │   ├── vertex.glsl
+│   │   │   └── fragment.glsl
+│   │   └── glitch/        # Interactive glitch shaders
+│   │       ├── vertex.glsl
+│   │       └── fragment.glsl
+│   ├── systems/           # Core systems
+│   │   ├── SceneManager.ts         # Three.js scene management
+│   │   ├── GridSystem.ts           # Reality grid
+│   │   ├── OrbSystem.ts            # Floating orbs
+│   │   ├── ParticleSystem.ts       # Particle effects with pooling
+│   │   ├── InteractionController.ts # Mouse/touch/keyboard input
+│   │   ├── AudioSystem.ts          # Web Audio API
+│   │   ├── NarrativeSystem.ts      # Story, zones, choices
+│   │   ├── GlitchSystem.ts         # Interactive reality tears
+│   │   ├── UIController.ts         # UI state management
+│   │   └── DebugGUI.ts             # Developer controls
+│   ├── config/
+│   │   └── settings.ts    # Centralized configuration
+│   ├── utils/
+│   │   └── helpers.ts     # Utility functions (EventBus, MathUtils, etc.)
+│   ├── types/
+│   │   └── index.ts       # TypeScript interfaces
+│   ├── Application.ts     # Main application class
+│   ├── main.ts           # Entry point
+│   └── style.css         # Styles
+├── index.html
+├── vite.config.ts        # Vite configuration with GLSL and PWA
+├── tsconfig.json         # TypeScript configuration
+├── package.json
+└── README.md
+```
 
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v14 or higher)
-- npm or yarn
+- **Node.js** 14+
+- **npm** or **yarn**
 
 ### Installation
 
-1. Install dependencies:
 ```bash
+# Install dependencies
 npm install
-```
 
-2. Start the development server:
-```bash
+# Start development server with HMR
 npm run dev
+
+# Type check
+npm run type-check
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+
+# Run tests
+npm test
 ```
 
-3. Open your browser to the URL shown (typically `http://localhost:5173`)
+### Development
 
-### Building for Production
+The development server runs at `http://localhost:5173` with:
+- ⚡ Hot Module Replacement for code
+- 🔄 Live shader reloading (via vite-plugin-glsl)
+- 🎯 TypeScript error checking
+- 🔍 Source maps for debugging
+
+## 🎮 Controls
+
+### Desktop
+- **Mouse Move** - Rotate the scene
+- **Mouse Click** - Create reality tear glitches
+- **Mouse Wheel** - Zoom in/out
+- **Space** - Pause/resume
+- **Escape** - Show menu
+- **Ctrl+D** - Toggle debug GUI
+
+### Mobile
+- **Touch & Drag** - Rotate the scene
+- **Tap** - Create glitch effects
+- **Pinch** - Zoom in/out
+
+## 🏗️ Architecture
+
+### Core Systems
+
+#### SceneManager
+Manages Three.js scene, camera, renderer, and window resizing.
+
+#### GridSystem
+Reality grid with custom shaders, wave animations, and glitch effects.
+
+#### OrbSystem
+Floating entities with Fresnel lighting, representing seekers of fulfillment.
+
+#### ParticleSystem
+Object-pooled atmospheric particles for performance optimization.
+
+#### InteractionController
+Handles all mouse, touch, and keyboard input with event emission.
+
+#### AudioSystem
+Web Audio API-based generative soundscapes with ambient drones and effects.
+
+#### NarrativeSystem
+Manages story progression, zones, choices, and multiple endings.
+
+#### GlitchSystem
+Interactive reality tear effects created by user clicks/touches.
+
+#### UIController
+State machine for UI screens (loading, intro, HUD, choices, ending).
+
+#### DebugGUI
+Live parameter controls using lil-gui for development.
+
+### Design Patterns
+
+- **Event-Driven Architecture** - EventBus for decoupled communication
+- **Object Pooling** - Efficient particle management
+- **Dependency Injection** - Systems receive dependencies in constructors
+- **State Management** - GameState enum and centralized state
+- **Configuration** - Centralized settings with runtime updates
+
+## 🎨 Customization
+
+### Changing Colors
+
+Edit `src/config/settings.ts`:
+
+```typescript
+public static visual: VisualConfig = {
+  colors: {
+    primary: new THREE.Color(0x00ffff),    // Cyan
+    secondary: new THREE.Color(0xff00ff),  // Magenta
+    accent: new THREE.Color(0x00ff88),     // Green
+    glitch: new THREE.Color(0xff0066),     // Pink
+  },
+  // ...
+}
+```
+
+### Adjusting Performance
+
+```typescript
+public static device: DeviceConfig = {
+  orbCount: 15,              // Number of floating orbs
+  particleCount: 500,        // Number of particles
+  antialiasing: true,        // Enable/disable antialiasing
+  pixelRatio: 2,            // Max pixel ratio
+  // ...
+}
+```
+
+### Modifying Shaders
+
+Edit GLSL files in `src/shaders/`. Changes are live-reloaded during development.
+
+### Gameplay Tuning
+
+```typescript
+public static gameplay: GameplayConfig = {
+  progressionSpeed: {
+    consciousness: 0.001,    // Rate of consciousness growth
+    fulfillment: 0.0005,     // Rate of fulfillment growth
+  },
+  zones: {
+    awakening: { fulfillmentThreshold: 0.33 },
+    transcendence: { fulfillmentThreshold: 0.66 },
+  },
+  // ...
+}
+```
+
+## 🎯 Narrative Structure
+
+### Zones
+
+1. **Void** (0-33% fulfillment)
+   - Initial uncertainty
+   - Dark, chaotic visuals
+   - Questions about reality
+
+2. **Awakening** (33-66% fulfillment)
+   - Growing awareness
+   - Magenta-tinted HUD
+   - Pattern recognition
+
+3. **Transcendence** (66-100% fulfillment)
+   - Deep understanding
+   - Green-tinted HUD
+   - Unity of opposites
+
+### Endings
+
+The ending depends on player choices and final consciousness/fulfillment levels:
+
+- **Dissolution** - Letting go of meaning
+- **Acceptance** - Embracing the simulation
+- **Transcendence** - Transcending the binary
+- **Rebellion** - Rejecting the system
+
+## 🔧 Debug Features
+
+Press **Ctrl+D** to open the debug GUI:
+
+- **Performance** - FPS counter, object pool statistics
+- **Visual** - Live color adjustments
+- **Grid** - Wave intensity, glitch intensity
+- **Audio** - Volume controls for all channels
+- **Gameplay** - Progression speed controls
+- **Actions** - Trigger glitches, force zone changes, show choices
+- **Camera** - FOV and position controls
+
+## 📊 Technical Details
+
+### Shader Features
+
+**Grid Shader:**
+- Multi-frequency wave distortion
+- Dual-scale grid lines
+- Glitch effects with noise
+- Scanline overlay
+- Elevation-based coloring
+
+**Orb Shader:**
+- Fresnel rim lighting
+- Multi-frequency pulsing
+- Fulfillment-based color transitions
+- Distance-based core brightness
+
+**Glitch Shader:**
+- RGB channel split
+- Scanline distortion
+- Block corruption
+- Reality tear effect
+
+### Audio System
+
+Generative soundscape using Web Audio API:
+- Low drone (55 Hz sine wave)
+- Mid drone with LFO modulation (110 Hz)
+- High shimmer (880 Hz)
+- Procedural glitch sounds
+- Zone transition sweeps
+- Orb interaction tones
+
+### Performance Optimizations
+
+- **Object Pooling** - Reusable particle instances
+- **Geometry LOD** - Reduced segments on mobile
+- **Conditional Features** - Shadows and antialiasing disabled on mobile
+- **Pixel Ratio Cap** - Max 2x for performance
+- **Efficient Updates** - Delta time-based animations
+- **Smart Rendering** - Only update what changes
+
+## 🌐 Browser Compatibility
+
+- **Chrome/Edge** 90+
+- **Firefox** 88+
+- **Safari** 14+
+- **Mobile Safari** iOS 14+
+- **Chrome Mobile** Android 5+
+
+Requires WebGL support (automatically detected with fallback error message).
+
+## 🔬 Testing
+
+```bash
+# Run tests
+npm test
+
+# Run tests with UI
+npm run test:ui
+
+# Type check only
+npm run type-check
+```
+
+## 📦 Building for Production
 
 ```bash
 npm run build
 ```
 
-The optimized production build will be in the `dist` folder.
+Optimizations:
+- Terser minification with console/debugger removal
+- Code splitting (Three.js as separate chunk)
+- GLSL shader compression
+- PWA manifest and service worker
+- Asset optimization
 
-### Preview Production Build
+## 🎓 Concepts & Philosophy
 
-```bash
-npm run preview
-```
+This experience explores:
 
-## Project Structure
+- **Simulation Hypothesis** - The idea that reality might be a sophisticated simulation
+- **Consciousness** - Self-awareness within the system
+- **Fulfillment** - Finding meaning despite uncertainty
+- **Choice vs Determinism** - Agency within constraints
+- **Transcendence** - Moving beyond binary thinking
 
-```
-.
-├── index.html          # Entry point with semantic HTML
-├── style.css           # Responsive styling with mobile optimizations
-├── main.js             # Main application logic and Three.js setup
-├── package.json        # Dependencies and scripts
-└── README.md          # Documentation
-```
+The glitch effects represent "tears in reality" - moments where the simulation reveals itself. The progressive narrative mirrors the journey from unconscious acceptance to aware engagement with existence.
 
-## Custom Shaders
+## 🙏 Credits
 
-### Grid Shader
-The reality grid uses custom vertex and fragment shaders to create:
-- Wave distortions simulating reality fluctuations
-- Grid line rendering with glow effects
-- Glitch effects for the simulation aesthetic
-- Elevation-based coloring
+- **Three.js** - 3D rendering engine
+- **lil-gui** - Debug controls
+- **Vite** - Build tool and dev server
+- **TypeScript** - Type safety
+- **GLSL** - Shader programming
 
-### Orb Shader
-Floating orbs use shaders for:
-- Fresnel rim lighting
-- Pulsing animations
-- Color transitions based on fulfillment level
-- Additive blending for ethereal appearance
+## 📄 License
 
-## Performance Considerations
+MIT License - See LICENSE file for details
 
-### Desktop
-- Full antialiasing
-- 15 floating orbs
-- 500 atmospheric particles
-- High polygon count for smooth curves
+## 🚀 What's New in v2.0
 
-### Mobile
-- Antialiasing disabled for performance
-- 8 floating orbs
-- 200 atmospheric particles
-- Reduced geometry complexity
-- Pixel ratio capped at 2x
+**Complete Rewrite:**
+- ✅ Converted from JavaScript to TypeScript
+- ✅ Modular architecture with separate systems
+- ✅ GLSL shaders in external files
+- ✅ Object pooling for particles
+- ✅ Interactive glitch effects
+- ✅ Narrative system with choices and endings
+- ✅ Audio system with generative sounds
+- ✅ Debug GUI with live controls
+- ✅ PWA support with offline capability
+- ✅ Loading, error, and ending screens
+- ✅ Zone-based progression system
+- ✅ Comprehensive configuration system
+- ✅ Event-driven architecture
+- ✅ Enhanced accessibility features
 
-### Accessibility
-- Respects `prefers-reduced-motion` for users sensitive to animations
-- Keyboard-accessible UI elements
-- Semantic HTML structure
+---
 
-## Browser Compatibility
-
-- Chrome/Edge 90+
-- Firefox 88+
-- Safari 14+
-- Mobile Safari (iOS 14+)
-- Chrome Mobile (Android 5+)
-
-Requires WebGL support. Most modern browsers and devices are supported.
-
-## Customization
-
-### Changing Colors
-Edit the shader uniforms in `main.js`:
-```javascript
-color1: { value: new THREE.Color(0x00ffff) }, // Cyan
-color2: { value: new THREE.Color(0xff00ff) }  // Magenta
-```
-
-### Adjusting Performance
-Modify object counts in `main.js`:
-```javascript
-const orbCount = window.innerWidth > 768 ? 15 : 8;
-const particleCount = window.innerWidth > 768 ? 500 : 200;
-```
-
-### Wave Intensity
-Adjust the grid wave animation:
-```javascript
-waveIntensity: { value: 0.5 } // Range: 0.0 - 2.0
-```
-
-## Concept & Theme
-
-This experience explores the philosophical concept of simulation reality - the idea that our existence might be a sophisticated digital simulation. The floating orbs represent individuals navigating this reality, seeking meaning and fulfillment.
-
-As users explore:
-- **Consciousness** gradually increases (awareness of the simulation)
-- **Fulfillment** slowly grows (finding meaning within the system)
-- Visual effects intensify reflecting this journey
-- Messages evolve from uncertainty to revelation
-
-The glitch effects and grid patterns reinforce the digital nature of this reality, while the smooth animations and beautiful shaders create an emotional, contemplative atmosphere.
-
-## License
-
-MIT
-
-## Credits
-
-Created with Three.js and modern web technologies. Shaders hand-written in GLSL for unique visual identity.
+**Built with ❤️ and existential curiosity**
