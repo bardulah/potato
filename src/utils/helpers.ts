@@ -129,32 +129,90 @@ export class ColorUtils {
   }
 }
 
+/**
+ * Type-safe event bus with proper memory management
+ */
+export type EventMap = {
+  // Game events
+  'game:start': void;
+  'game:pause': void;
+  'game:resume': void;
+  'game:toggle_pause': void;
+  'game:show_menu': void;
+
+  // Audio events
+  'audio:initialize': void;
+  'audio:play_glitch': void;
+  'audio:play_transition': { zone: string };
+  'audio:set_master': number;
+  'audio:set_ambient': number;
+  'audio:set_effects': number;
+
+  // Narrative events
+  'narrative:make_choice': string;
+  'narrative:request_choices': void;
+  'narrative:glitch_discovered': void;
+  'narrative:zone_change': { zone: string };
+  'narrative:choice_made': any;
+  'narrative:ending': any;
+
+  // Mouse/Touch events
+  'mouse:move': { mouse: THREE.Vector2; event: MouseEvent };
+  'mouse:click': { mouse: THREE.Vector2; raycaster: THREE.Raycaster; event: MouseEvent };
+  'touch:start': { touch: Touch; mouse: THREE.Vector2 };
+  'touch:move': { deltaX: number; deltaY: number };
+  'touch:end': { touch: Touch; mouse: THREE.Vector2; raycaster: THREE.Raycaster };
+
+  // Camera events
+  'camera:zoom': { delta: number; newZ: number };
+
+  // Keyboard events
+  'keyboard:down': { key: string; code: string; event: KeyboardEvent };
+
+  // Debug events
+  'debug:toggle': void;
+  'debug:trigger_glitch': void;
+  'debug:grid_wave': number;
+  'debug:grid_glitch': number;
+  'debug:camera_fov': number;
+  'debug:camera_pos': { x?: number; y?: number; z?: number };
+  'debug:color_change': { type: string; color: string };
+  'debug:change_zone': string;
+  'debug:pool_stats': { available: number; inUse: number; total: number };
+};
+
 export class EventBus {
-  private static listeners: Map<string, Function[]> = new Map();
+  private static listeners = new Map<keyof EventMap, Set<Function>>();
 
-  static on(event: string, callback: Function) {
+  static on<K extends keyof EventMap>(
+    event: K,
+    callback: (data: EventMap[K]) => void
+  ): () => void {
     if (!this.listeners.has(event)) {
-      this.listeners.set(event, []);
+      this.listeners.set(event, new Set());
     }
-    this.listeners.get(event)!.push(callback);
+    this.listeners.get(event)!.add(callback);
+
+    // Return unsubscribe function
+    return () => this.off(event, callback);
   }
 
-  static off(event: string, callback: Function) {
+  static off<K extends keyof EventMap>(event: K, callback: (data: EventMap[K]) => void): void {
     if (!this.listeners.has(event)) return;
-    const callbacks = this.listeners.get(event)!;
-    const index = callbacks.indexOf(callback);
-    if (index > -1) {
-      callbacks.splice(index, 1);
-    }
+    this.listeners.get(event)!.delete(callback);
   }
 
-  static emit(event: string, data?: any) {
+  static emit<K extends keyof EventMap>(event: K, data: EventMap[K]): void {
     if (!this.listeners.has(event)) return;
     this.listeners.get(event)!.forEach((callback) => callback(data));
   }
 
-  static clear() {
+  static clear(): void {
     this.listeners.clear();
+  }
+
+  static getListenerCount<K extends keyof EventMap>(event: K): number {
+    return this.listeners.get(event)?.size || 0;
   }
 }
 
@@ -162,11 +220,19 @@ export class PerformanceMonitor {
   private frameCount = 0;
   private lastTime = performance.now();
   private fps = 60;
+  private frameTimes: number[] = [];
+  private maxFrameTimes = 60;
 
   update(): number {
     this.frameCount++;
     const currentTime = performance.now();
     const delta = currentTime - this.lastTime;
+
+    // Track frame times for more detailed analysis
+    this.frameTimes.push(delta);
+    if (this.frameTimes.length > this.maxFrameTimes) {
+      this.frameTimes.shift();
+    }
 
     if (delta >= 1000) {
       this.fps = (this.frameCount * 1000) / delta;
@@ -179,6 +245,25 @@ export class PerformanceMonitor {
 
   getFPS(): number {
     return this.fps;
+  }
+
+  getAverageFrameTime(): number {
+    if (this.frameTimes.length === 0) return 0;
+    return this.frameTimes.reduce((a, b) => a + b, 0) / this.frameTimes.length;
+  }
+
+  getWorstFrameTime(): number {
+    if (this.frameTimes.length === 0) return 0;
+    return Math.max(...this.frameTimes);
+  }
+
+  getStats() {
+    return {
+      fps: this.fps,
+      avgFrameTime: this.getAverageFrameTime(),
+      worstFrameTime: this.getWorstFrameTime(),
+      frameCount: this.frameCount,
+    };
   }
 }
 
@@ -232,5 +317,87 @@ export class ObjectPool<T> {
       inUse: this.inUse.size,
       total: this.available.length + this.inUse.size,
     };
+  }
+}
+
+/**
+ * User preferences manager with localStorage persistence
+ */
+export class PreferencesManager {
+  private static readonly STORAGE_KEY = 'simulation-reality-prefs';
+  private prefs: Record<string, any> = {};
+
+  constructor() {
+    this.load();
+  }
+
+  private load(): void {
+    try {
+      const stored = localStorage.getItem(PreferencesManager.STORAGE_KEY);
+      if (stored) {
+        this.prefs = JSON.parse(stored);
+      }
+    } catch (error) {
+      console.warn('Failed to load preferences:', error);
+    }
+  }
+
+  private save(): void {
+    try {
+      localStorage.setItem(PreferencesManager.STORAGE_KEY, JSON.stringify(this.prefs));
+    } catch (error) {
+      console.warn('Failed to save preferences:', error);
+    }
+  }
+
+  get<T>(key: string, defaultValue: T): T {
+    return this.prefs[key] !== undefined ? this.prefs[key] : defaultValue;
+  }
+
+  set(key: string, value: any): void {
+    this.prefs[key] = value;
+    this.save();
+  }
+
+  has(key: string): boolean {
+    return this.prefs[key] !== undefined;
+  }
+
+  remove(key: string): void {
+    delete this.prefs[key];
+    this.save();
+  }
+
+  clear(): void {
+    this.prefs = {};
+    localStorage.removeItem(PreferencesManager.STORAGE_KEY);
+  }
+}
+
+/**
+ * Simple analytics tracker (for hooks, doesn't send data)
+ */
+export class Analytics {
+  static trackEvent(category: string, action: string, label?: string, value?: number): void {
+    if (import.meta.env.DEV) {
+      console.log('[Analytics]', { category, action, label, value });
+    }
+    // Hook for actual analytics integration
+    // window.gtag?.('event', action, { category, label, value });
+  }
+
+  static trackPageView(path: string): void {
+    if (import.meta.env.DEV) {
+      console.log('[Analytics] Page view:', path);
+    }
+    // Hook for actual analytics integration
+    // window.gtag?.('config', 'GA_MEASUREMENT_ID', { page_path: path });
+  }
+
+  static trackTiming(category: string, variable: string, time: number): void {
+    if (import.meta.env.DEV) {
+      console.log('[Analytics] Timing:', { category, variable, time });
+    }
+    // Hook for actual analytics integration
   }
 }

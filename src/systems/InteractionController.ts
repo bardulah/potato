@@ -8,9 +8,17 @@ export class InteractionController {
   private mouse = new THREE.Vector2();
   private targetRotation = new THREE.Vector2();
   private currentRotation = new THREE.Vector2();
-  private raycaster = new THREE.Raycaster();
   private touchStartX = 0;
   private touchStartY = 0;
+
+  // Bound methods to avoid memory leaks
+  private boundOnMouseMove = this.onMouseMove.bind(this);
+  private boundOnClick = this.onClick.bind(this);
+  private boundOnTouchStart = this.onTouchStart.bind(this);
+  private boundOnTouchMove = this.onTouchMove.bind(this);
+  private boundOnTouchEnd = this.onTouchEnd.bind(this);
+  private boundOnWheel = this.onWheel.bind(this);
+  private boundOnKeyDown = this.onKeyDown.bind(this);
 
   constructor(canvas: HTMLCanvasElement, camera: THREE.PerspectiveCamera) {
     this.canvas = canvas;
@@ -20,19 +28,19 @@ export class InteractionController {
 
   private setupEventListeners(): void {
     // Mouse movement
-    window.addEventListener('mousemove', this.onMouseMove.bind(this));
-    window.addEventListener('click', this.onClick.bind(this));
+    window.addEventListener('mousemove', this.boundOnMouseMove);
+    window.addEventListener('click', this.boundOnClick);
 
     // Touch support
-    this.canvas.addEventListener('touchstart', this.onTouchStart.bind(this));
-    this.canvas.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
-    this.canvas.addEventListener('touchend', this.onTouchEnd.bind(this));
+    this.canvas.addEventListener('touchstart', this.boundOnTouchStart);
+    this.canvas.addEventListener('touchmove', this.boundOnTouchMove, { passive: false });
+    this.canvas.addEventListener('touchend', this.boundOnTouchEnd);
 
     // Scroll/pinch to zoom
-    window.addEventListener('wheel', this.onWheel.bind(this), { passive: false });
+    window.addEventListener('wheel', this.boundOnWheel, { passive: false });
 
     // Keyboard
-    window.addEventListener('keydown', this.onKeyDown.bind(this));
+    window.addEventListener('keydown', this.boundOnKeyDown);
   }
 
   private onMouseMove(event: MouseEvent): void {
@@ -42,18 +50,23 @@ export class InteractionController {
     this.targetRotation.x = this.mouse.y * Settings.controls.rotationSpeed;
     this.targetRotation.y = this.mouse.x * Settings.controls.rotationSpeed;
 
-    EventBus.emit('mouse:move', { mouse: this.mouse, event });
+    EventBus.emit('mouse:move', {
+      mouse: this.mouse.clone(),
+      event
+    });
   }
 
   private onClick(event: MouseEvent): void {
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-    this.raycaster.setFromCamera(this.mouse, this.camera);
+    // Create NEW raycaster for this event to avoid sharing
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(this.mouse, this.camera);
 
     EventBus.emit('mouse:click', {
-      mouse: this.mouse,
-      raycaster: this.raycaster,
+      mouse: this.mouse.clone(),
+      raycaster,
       event,
     });
   }
@@ -67,7 +80,10 @@ export class InteractionController {
       this.mouse.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
       this.mouse.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
 
-      EventBus.emit('touch:start', { touch: event.touches[0], mouse: this.mouse });
+      EventBus.emit('touch:start', {
+        touch: event.touches[0],
+        mouse: this.mouse.clone()
+      });
     }
   }
 
@@ -95,12 +111,14 @@ export class InteractionController {
       this.mouse.x = (touch.clientX / window.innerWidth) * 2 - 1;
       this.mouse.y = -(touch.clientY / window.innerHeight) * 2 + 1;
 
-      this.raycaster.setFromCamera(this.mouse, this.camera);
+      // Create NEW raycaster for this event
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(this.mouse, this.camera);
 
       EventBus.emit('touch:end', {
         touch,
-        mouse: this.mouse,
-        raycaster: this.raycaster,
+        mouse: this.mouse.clone(),
+        raycaster,
       });
     }
   }
@@ -124,12 +142,14 @@ export class InteractionController {
 
     // Common shortcuts
     if (event.key === ' ') {
-      EventBus.emit('game:toggle_pause');
+      event.preventDefault();
+      EventBus.emit('game:toggle_pause', undefined);
     } else if (event.key === 'Escape') {
-      EventBus.emit('game:show_menu');
+      event.preventDefault();
+      EventBus.emit('game:show_menu', undefined);
     } else if (event.key === 'd' && event.ctrlKey) {
       event.preventDefault();
-      EventBus.emit('debug:toggle');
+      EventBus.emit('debug:toggle', undefined);
     }
   }
 
@@ -148,17 +168,13 @@ export class InteractionController {
     return this.currentRotation.clone();
   }
 
-  public getRaycaster(): THREE.Raycaster {
-    return this.raycaster;
-  }
-
   public dispose(): void {
-    window.removeEventListener('mousemove', this.onMouseMove.bind(this));
-    window.removeEventListener('click', this.onClick.bind(this));
-    this.canvas.removeEventListener('touchstart', this.onTouchStart.bind(this));
-    this.canvas.removeEventListener('touchmove', this.onTouchMove.bind(this));
-    this.canvas.removeEventListener('touchend', this.onTouchEnd.bind(this));
-    window.removeEventListener('wheel', this.onWheel.bind(this));
-    window.removeEventListener('keydown', this.onKeyDown.bind(this));
+    window.removeEventListener('mousemove', this.boundOnMouseMove);
+    window.removeEventListener('click', this.boundOnClick);
+    this.canvas.removeEventListener('touchstart', this.boundOnTouchStart);
+    this.canvas.removeEventListener('touchmove', this.boundOnTouchMove);
+    this.canvas.removeEventListener('touchend', this.boundOnTouchEnd);
+    window.removeEventListener('wheel', this.boundOnWheel);
+    window.removeEventListener('keydown', this.boundOnKeyDown);
   }
 }
