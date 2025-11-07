@@ -4,20 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="An immersive journey through simulation reality">
+    <meta name="theme-color" content="#000000">
     <title>Simulation Reality - Seeking Fulfillment</title>
-    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="container">
         <canvas id="canvas"></canvas>
 
         <div id="ui-overlay">
-            <div id="intro" class="fade-in">
+            <!-- Loading Screen -->
+            <div id="loading" class="hidden">
+                <div class="loading-spinner"></div>
+                <p>INITIALIZING SIMULATION...</p>
+            </div>
+
+            <!-- Error Screen -->
+            <div id="error" class="hidden">
+                <h2>SYSTEM ERROR</h2>
+                <p id="error-message"></p>
+            </div>
+
+            <!-- Intro Screen -->
+            <div id="intro" class="fade-in hidden">
                 <h1>SIMULATION REALITY</h1>
                 <p class="subtitle">In a world of infinite possibilities, what do you truly seek?</p>
                 <button id="enter-btn">ENTER THE SIMULATION</button>
             </div>
 
+            <!-- HUD -->
             <div id="hud" class="hidden">
                 <div class="hud-item">
                     <span class="label">CONSCIOUSNESS:</span>
@@ -36,13 +50,27 @@
                 </div>
             </div>
 
+            <!-- Instructions -->
             <div id="instructions" class="hidden">
-                <p>Click and drag to rotate • Scroll to zoom</p>
-                <p class="mobile-only">Touch and drag to explore</p>
+                <p class="desktop-only">Click anywhere to reveal reality tears</p>
+                <p class="desktop-only">Mouse to rotate • Scroll to zoom</p>
+                <p class="mobile-only">Touch anywhere to create glitches</p>
+                <p class="mobile-only">Drag to explore • Pinch to zoom</p>
+                <p>Press Ctrl+D for debug controls</p>
+            </div>
+
+            <!-- Choices Screen -->
+            <div id="choices" class="hidden">
+                <!-- Dynamically populated by UIController -->
+            </div>
+
+            <!-- Ending Screen -->
+            <div id="ending-screen" class="hidden">
+                <!-- Dynamically populated by UIController -->
             </div>
         </div>
     </div>
 
-    <script type="module" src="main.js"></script>
+    <script type="module" src="/src/main.ts"></script>
 </body>
 </html>
